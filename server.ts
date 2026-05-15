@@ -99,8 +99,9 @@ function getCategory(symbol: string) {
   return "Other";
 }
 
+const app = express();
+
 async function startServer() {
-  const app = express();
   const PORT = 3000;
 
   // API Routes
@@ -142,7 +143,6 @@ async function startServer() {
       const sigma2 = sigma1 * 2;
 
       // Calculate chart data for last 100 days
-      // ... (rest of the logic)
       const chartData = history.slice(-100).map((d: any, i: number, arr: any[]) => {
         return {
           date: d.date.toISOString().split("T")[0],
@@ -205,6 +205,7 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
+    // Production: serve static files
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
@@ -212,9 +213,14 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  // Only listen in local development or if running as a main script
+  if (process.env.NODE_ENV !== "test" && !process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
 startServer();
+
+export default app;
