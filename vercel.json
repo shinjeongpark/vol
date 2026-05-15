@@ -2,8 +2,12 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "server.ts"
+      "source": "/api/stock-analysis/:symbol",
+      "destination": "/api/stock-analysis?symbol=:symbol"
+    },
+    {
+      "source": "/api/market-data",
+      "destination": "/api/market-data"
     },
     {
       "source": "/(.*)",
